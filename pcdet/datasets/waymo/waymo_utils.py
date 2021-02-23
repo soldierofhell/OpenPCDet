@@ -12,6 +12,7 @@ import tensorflow as tf
 from waymo_open_dataset.utils import frame_utils, transform_utils, range_image_utils
 from waymo_open_dataset import dataset_pb2
 import zarr
+import random
 
 try:
     tf.enable_eager_execution()
