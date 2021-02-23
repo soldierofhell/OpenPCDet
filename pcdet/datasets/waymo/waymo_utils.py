@@ -144,6 +144,11 @@ def convert_range_image_to_point_cloud(frame, range_images, camera_projections, 
         points_NLZ.append(points_NLZ_tensor.numpy())
         points_intensity.append(points_intensity_tensor.numpy())
         points_elongation.append(points_elongation_tensor.numpy())
+        
+        print('beam_inclinations: ', beam_inclinations.numpy())
+        print('Shape of beam_inclinations: ', beam_inclinations.shape)
+        print('Shape of range_image_tensor: ', range_image_tensor.shape)
+        print('Shape of points_tensor: ', points_tensor.shape)
 
     return points, cp_points, points_NLZ, points_intensity, points_elongation
 
