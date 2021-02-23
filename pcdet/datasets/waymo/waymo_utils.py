@@ -104,7 +104,7 @@ def convert_range_image_to_point_cloud(frame, range_images, camera_projections, 
         if len(c.beam_inclinations) == 0:  # pylint: disable=g-explicit-length-test
             beam_inclinations = range_image_utils.compute_inclination(
                 tf.constant([c.beam_inclination_min, c.beam_inclination_max]),
-                height=range_image.shape.dims[0])
+                height=range_image.shape.dims[0]) # shape: (64,) for TOP
         else:
             beam_inclinations = tf.constant(c.beam_inclinations)
 
@@ -112,7 +112,7 @@ def convert_range_image_to_point_cloud(frame, range_images, camera_projections, 
         extrinsic = np.reshape(np.array(c.extrinsic.transform), [4, 4])
 
         range_image_tensor = tf.reshape(
-            tf.convert_to_tensor(range_image.data), range_image.shape.dims)
+            tf.convert_to_tensor(range_image.data), range_image.shape.dims) # shape: (64, 2650, 4) for TOP
         pixel_pose_local = None
         frame_pose_local = None
         if c.name == dataset_pb2.LaserName.TOP:
@@ -132,7 +132,7 @@ def convert_range_image_to_point_cloud(frame, range_images, camera_projections, 
 
         range_image_cartesian = tf.squeeze(range_image_cartesian, axis=0)
         points_tensor = tf.gather_nd(range_image_cartesian,
-                                     tf.where(range_image_mask))
+                                     tf.where(range_image_mask)) # shape: (n_points, 3) for TOP
         points_NLZ_tensor = tf.gather_nd(range_image_NLZ, tf.compat.v1.where(range_image_mask))
         points_intensity_tensor = tf.gather_nd(range_image_intensity, tf.compat.v1.where(range_image_mask))
         points_elongation_tensor = tf.gather_nd(range_image_elongation, tf.compat.v1.where(range_image_mask))
@@ -145,10 +145,10 @@ def convert_range_image_to_point_cloud(frame, range_images, camera_projections, 
         points_intensity.append(points_intensity_tensor.numpy())
         points_elongation.append(points_elongation_tensor.numpy())
         
-        print('beam_inclinations: ', beam_inclinations.numpy())
-        print('Shape of beam_inclinations: ', beam_inclinations.shape)
-        print('Shape of range_image_tensor: ', range_image_tensor.shape)
-        print('Shape of points_tensor: ', points_tensor.shape)
+        #print('beam_inclinations: ', beam_inclinations.numpy())
+        #print('Shape of beam_inclinations: ', beam_inclinations.shape)
+        #print('Shape of range_image_tensor: ', range_image_tensor.shape)
+        #print('Shape of points_tensor: ', points_tensor.shape)
 
     return points, cp_points, points_NLZ, points_intensity, points_elongation
 
