@@ -14,6 +14,7 @@ from pathlib import Path
 from ...ops.roiaware_pool3d import roiaware_pool3d_utils
 from ...utils import box_utils, common_utils
 from ..dataset import DatasetTemplate
+import zarr
 
 
 class WaymoDataset(DatasetTemplate):
@@ -100,10 +101,12 @@ class WaymoDataset(DatasetTemplate):
         return all_sequences_infos
 
     def get_lidar(self, sequence_name, sample_idx):
-        lidar_file = self.data_path / sequence_name / ('%04d.npy' % sample_idx)
-        point_features = np.load(lidar_file)  # (N, 7): [x, y, z, intensity, elongation, NLZ_flag]
+        lidar_file = self.data_path / sequence_name / ('%04d.zarr' % sample_idx) # .npy
+        #point_features = np.load(lidar_file)  # (N, 7): [x, y, z, intensity, elongation, NLZ_flag]
+        point_features = zarr.load(lidar_file)  # (N, 5): [x, y, z, intensity, NLZ_flag]
 
-        points_all, NLZ_flag = point_features[:, 0:5], point_features[:, 5]
+        #points_all, NLZ_flag = point_features[:, 0:5], point_features[:, 5]
+        points_all, NLZ_flag = point_features[:, 0:5], point_features[:, 4]
         points_all = points_all[NLZ_flag == -1]
         points_all[:, 3] = np.tanh(points_all[:, 3])
         return points_all
