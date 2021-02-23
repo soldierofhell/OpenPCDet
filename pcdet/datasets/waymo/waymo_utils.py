@@ -176,7 +176,7 @@ def save_lidar_points(frame, cur_save_path):
     ], axis=-1).astype(np.float32)
 
     #np.save(cur_save_path, save_points)
-    zarr.save(cur_save_path, save_points)
+    zarr.save(str(cur_save_path), save_points)
     # print('saving to ', cur_save_path)
     return num_points_of_each_lidar
 
