@@ -98,6 +98,8 @@ def convert_range_image_to_point_cloud(frame, range_images, camera_projections, 
         range_image_top_pose_tensor_rotation,
         range_image_top_pose_tensor_translation)
     for c in calibrations:
+        if c.name != dataset_pb2.LaserName.TOP:
+            continue # only TOP lidar
         range_image = range_images[c.name][ri_index]
         if len(c.beam_inclinations) == 0:  # pylint: disable=g-explicit-length-test
             beam_inclinations = range_image_utils.compute_inclination(
