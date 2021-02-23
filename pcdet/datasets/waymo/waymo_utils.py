@@ -11,6 +11,7 @@ from ...utils import common_utils
 import tensorflow as tf
 from waymo_open_dataset.utils import frame_utils, transform_utils, range_image_utils
 from waymo_open_dataset import dataset_pb2
+import zarr
 
 try:
     tf.enable_eager_execution()
@@ -168,10 +169,11 @@ def save_lidar_points(frame, cur_save_path):
 
     num_points_of_each_lidar = [point.shape[0] for point in points]
     save_points = np.concatenate([
-        points_all, points_intensity, points_elongation, points_in_NLZ_flag
+        points_all, points_intensity, points_in_NLZ_flag # , points_elongation
     ], axis=-1).astype(np.float32)
 
-    np.save(cur_save_path, save_points)
+    #np.save(cur_save_path, save_points)
+    zarr.save(cur_save_path, save_points)
     # print('saving to ', cur_save_path)
     return num_points_of_each_lidar
 
@@ -221,7 +223,7 @@ def process_single_sequence(sequence_file, save_path, sampled_interval, has_labe
             annotations = generate_labels(frame)
             info['annos'] = annotations
 
-        num_points_of_each_lidar = save_lidar_points(frame, cur_save_dir / ('%04d.npy' % cnt))
+        num_points_of_each_lidar = save_lidar_points(frame, cur_save_dir / ('%04d.zarr' % cnt)) # .npy
         info['num_points_of_each_lidar'] = num_points_of_each_lidar
 
         sequence_infos.append(info)
