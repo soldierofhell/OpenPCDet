@@ -103,7 +103,7 @@ class WaymoDataset(DatasetTemplate):
     def get_lidar(self, sequence_name, sample_idx):
         lidar_file = self.data_path / sequence_name / ('%04d.zarr' % sample_idx) # .npy
         #point_features = np.load(lidar_file)  # (N, 7): [x, y, z, intensity, elongation, NLZ_flag]
-        point_features = zarr.load(lidar_file)  # (N, 5): [x, y, z, intensity, NLZ_flag]
+        point_features = zarr.load(str(lidar_file))  # (N, 5): [x, y, z, intensity, NLZ_flag]
 
         #points_all, NLZ_flag = point_features[:, 0:5], point_features[:, 5]
         points_all, NLZ_flag = point_features[:, 0:5], point_features[:, 4]
