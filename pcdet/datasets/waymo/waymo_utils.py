@@ -21,6 +21,8 @@ except:
 
 WAYMO_CLASSES = ['unknown', 'Vehicle', 'Pedestrian', 'Sign', 'Cyclist']
 
+beam_inclinations_dict = {}
+
 
 def generate_labels(frame):
     obj_name, difficulty, dimensions, locations, heading_angles = [], [], [], [], []
@@ -149,6 +151,12 @@ def convert_range_image_to_point_cloud(frame, range_images, camera_projections, 
         
         if random.randint(0, 19) == 0:
             print('beam_inclinations: ', beam_inclinations.numpy())
+            print('Shape of beam_inclinations: ', beam_inclinations.shape)
+            print('Shape of range_image_tensor: ', range_image_tensor.shape)
+        
+        beam_sum = floor(100*beam_inclinations.numpy().sum()) # code for beam_inclinations
+        beam_inclinations_dict.setdefault(beam_sum, {'inclinations': beam_inclinations.numpy(), 'count': 0})
+        beam_inclinations_dict[beam_sum]['count'] += 1
         
         #print('Shape of beam_inclinations: ', beam_inclinations.shape)
         #print('Shape of range_image_tensor: ', range_image_tensor.shape)
